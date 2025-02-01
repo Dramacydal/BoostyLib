@@ -8,7 +8,7 @@ public class VideoStream(ApiClient client) : EndpointBase
 {
     public override Endpoint Endpoint => new("/v1/blog/{channelName}/video_stream");
 
-    public async Task<VideoStreamResponse> Get(string channelName)
+    public async Task<VideoStreamResponse?> Get(string channelName)
     {
         return await client.GetAsync<VideoStreamResponse>(Endpoint.Build("", new()
         {
@@ -16,7 +16,7 @@ public class VideoStream(ApiClient client) : EndpointBase
         }));
     }
     
-    public async Task<ChatResponse> GetChat(string channelName, int limit = 10)
+    public async Task<ChatResponse?> GetChat(string channelName, int limit = 10)
     {
         if (limit <= 0)
             limit = 10;

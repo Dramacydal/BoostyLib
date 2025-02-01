@@ -16,7 +16,7 @@ public class StreamClient
 {
     private readonly BoostyCredentials _credentials;
     
-    private readonly string _channelName;
+    public readonly string ChannelName;
     
     public readonly BoostyApi Api;
     
@@ -35,7 +35,7 @@ public class StreamClient
 
     public StreamClient(string channelName, BoostyCredentials credentials, ILogger? logger = null)
     {
-        _channelName = channelName;
+        ChannelName = channelName;
         _credentials = credentials;
         _logger = logger;
         
@@ -65,8 +65,8 @@ public class StreamClient
     
     public async Task Connect()
     {
-        _blog = await Api.Blog.Get(_channelName);
-        _stream = await Api.VideoStream.Get(_channelName);
+        _blog = await Api.Blog.Get(ChannelName);
+        _stream = await Api.VideoStream.Get(ChannelName);
         if (_stream == null)
             throw new BoostyException("Stream is offline");
 
@@ -140,7 +140,7 @@ public class StreamClient
     private async Task Subscribe()
     {
         if (_stream == null)
-            _stream = await Api.VideoStream.Get(_channelName);
+            _stream = await Api.VideoStream.Get(ChannelName);
 
         if (_stream == null)
             return;
@@ -214,6 +214,6 @@ public class StreamClient
 
     public async Task SendMessage(string message)
     {
-        await Api.VideoStream.SendMessage(_channelName, message);
+        await Api.VideoStream.SendMessage(ChannelName, message);
     }
 }
