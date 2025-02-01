@@ -3,7 +3,7 @@ using BoostyLib.Endpoints.Responses;
 
 namespace BoostyLib.Endpoints;
 
-public class WebSocket(ApiClient client) : EndpointBase
+public class WebSocketApi(ApiClient client) : EndpointBase
 {
     public override Endpoint Endpoint => new("/v1/ws");
 

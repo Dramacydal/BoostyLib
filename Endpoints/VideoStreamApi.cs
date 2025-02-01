@@ -4,7 +4,7 @@ using BoostyLib.Entities;
 
 namespace BoostyLib.Endpoints;
 
-public class VideoStream(ApiClient client) : EndpointBase
+public class VideoStreamApi(ApiClient client) : EndpointBase
 {
     public override Endpoint Endpoint => new("/v1/blog/{channelName}/video_stream");
 
@@ -32,7 +32,6 @@ public class VideoStream(ApiClient client) : EndpointBase
 
     public async Task SendMessage(string channelName, string message)
     {
-
         var data = ChatMessage.CreateBasicMessage(message);
 
         await client.PostAsync<object>(this.Endpoint.Build("chat", new()

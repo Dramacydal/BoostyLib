@@ -6,17 +6,23 @@ public class BoostyApi
 {
     private readonly ApiClient _client;
 
-    public Blog Blog { get; }
-    
-    public VideoStream VideoStream { get; }
-    
-    public WebSocket WebSocket { get; }
+    public readonly BoostyCredentials Credentials;
 
-    public BoostyApi(BoostyCredentials credentials)
+    public BlogApi BlogApi { get; }
+
+    public TokenApi Token { get; }
+    
+    public VideoStreamApi VideoStream { get; }
+
+    public WebSocketApi WebSocket { get; }
+
+    public BoostyApi(BoostySettings settings)
     {
-        _client = new ApiClient(credentials);
+        Credentials = settings.Credentials;
+        _client = new ApiClient(settings);
 
-        Blog = new(_client);
+        BlogApi = new(_client);
+        Token = new (_client);
         VideoStream = new(_client);
         WebSocket = new(_client);
     }

@@ -13,7 +13,7 @@ public class Endpoint
 
     public string Build(string suffix = "", Dictionary<string, string>? parameters = null)
     {
-        suffix = suffix.Trim('/');
+        suffix = suffix.TrimStart('/');
         if (!string.IsNullOrEmpty(suffix))
             suffix = "/" + suffix;
 

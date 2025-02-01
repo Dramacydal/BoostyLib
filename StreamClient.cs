@@ -14,11 +14,9 @@ namespace BoostyLib;
 
 public class StreamClient
 {
-    private readonly BoostyCredentials _credentials;
-    
     public readonly string ChannelName;
     
-    public readonly BoostyApi Api;
+    private readonly BoostyApi _api;
     
     private readonly ILogger? _logger;
     
@@ -33,13 +31,11 @@ public class StreamClient
         return s;
     }
 
-    public StreamClient(string channelName, BoostyCredentials credentials, ILogger? logger = null)
+    public StreamClient(string channelName, BoostyApi api, ILogger? logger = null)
     {
         ChannelName = channelName;
-        _credentials = credentials;
         _logger = logger;
-        
-        Api = new BoostyApi(_credentials);
+        _api = api;
     }
 
     private VideoStreamResponse? _stream;
@@ -65,12 +61,12 @@ public class StreamClient
     
     public async Task Connect()
     {
-        _blog = await Api.Blog.Get(ChannelName);
-        _stream = await Api.VideoStream.Get(ChannelName);
+        _blog = await _api.BlogApi.Get(ChannelName);
+        _stream = await _api.VideoStream.Get(ChannelName);
         if (_stream == null)
             throw new BoostyException("Stream is offline");
 
-        var webSocketInfo = await Api.WebSocket.Fetch();
+        var webSocketInfo = await _api.WebSocket.Fetch();
         if (webSocketInfo == null)
             throw new BoostyException("Failed to fetch websocket info");
 
@@ -140,7 +136,7 @@ public class StreamClient
     private async Task Subscribe()
     {
         if (_stream == null)
-            _stream = await Api.VideoStream.Get(ChannelName);
+            _stream = await _api.VideoStream.Get(ChannelName);
 
         if (_stream == null)
             return;
@@ -169,7 +165,7 @@ public class StreamClient
         };
 
         var privateTokenResponse =
-            await Api.WebSocket.FetchPrivateToken(_clientId, [_stream.WsStreamChannel, _stream.WsChatChannel]);
+            await _api.WebSocket.FetchPrivateToken(_clientId, [_stream.WsStreamChannel, _stream.WsChatChannel]);
         foreach (var channel in privateTokenResponse.Channels)
         {
             var sub = CreateSubscription(channel.Channel);
@@ -214,6 +210,6 @@ public class StreamClient
 
     public async Task SendMessage(string message)
     {
-        await Api.VideoStream.SendMessage(ChannelName, message);
+        await _api.VideoStream.SendMessage(ChannelName, message);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using BoostyLib.Entities;
+using Newtonsoft.Json;
 
 namespace BoostyLib.Endpoints.Responses;
 
@@ -20,7 +21,7 @@ public class VideoStreamResponse
     public string WsChatChannel { get; set; }
 
     [JsonProperty("description")]
-    public List<object> Description { get; set; }
+    public List<ChatMessageData> Description { get; set; }
 
     [JsonProperty("data")]
     public List<VideoStreamData> VideoStreamData { get; set; }
@@ -185,7 +186,7 @@ public class PlayerUrl
     public string Type { get; set; }
     
     [JsonProperty("url")]
-    public string Url { get; set; }
+    public Uri? Url { get; set; }
 }
 
 public class ChatSettings

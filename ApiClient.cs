@@ -8,11 +8,11 @@ namespace BoostyLib;
 
 public class ApiClient
 {
-    private readonly BoostyCredentials _credentials;
+    private readonly BoostySettings _settings;
     
-    internal ApiClient(BoostyCredentials credentials)
+    internal ApiClient(BoostySettings settings)
     {
-        _credentials = credentials;
+        _settings = settings;
     }
 
     private Uri MakeUri(string endpoint, List<KeyValuePair<string, string>>? parameters)
@@ -35,9 +35,12 @@ public class ApiClient
     {
         var uri = MakeUri(url, parameters);
 
-        var client = new HttpClient();
+        var client = _settings.HttpClientFactory?.Invoke() ?? new HttpClient();
 
-        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_credentials.AccessToken}");
+        foreach (var header in _settings.Headers ?? [])
+            client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
+
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.Credentials.AccessToken}");
 
         var res = await client.GetAsync(uri);
         switch (res.StatusCode)
@@ -94,9 +97,12 @@ public class ApiClient
     {
         var uri = MakeUri(url, []);
 
-        var client = new HttpClient();
+        var client = _settings.HttpClientFactory?.Invoke() ?? new HttpClient();
 
-        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_credentials.AccessToken}");
+        foreach (var header in _settings.Headers ?? [])
+            client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
+
+        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {_settings.Credentials.AccessToken}");
 
         var res = await client.PostAsync(uri, content);
         switch (res.StatusCode)
